@@ -16,6 +16,6 @@
             android:text="Statistiques"
             android:textSize="18sp"
             android:textColor="#000000"
-            android:padding="8dp" />
+            android:padding="8dp"/>
     </LinearLayout>
 </ScrollView>
