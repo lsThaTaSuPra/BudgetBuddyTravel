@@ -17,6 +17,8 @@ import com.example.budgetbuddytravel.databinding.ActivityMainBinding;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import com.example.budgetbuddytravel.utils.SuggestionFragment;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,6 +46,9 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, new SuggestionFragment())
+                .commit();
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.example.budgetbuddytravel.Utils;
+package com.example.budgetbuddytravel.utils;
 
 import com.example.budgetbuddytravel.model.CategorieDepense;
 import com.example.budgetbuddytravel.model.Depense;
