@@ -54,10 +54,14 @@ public class Utilisateur {
     }
 
     public void creerCompte() {
+        // Logique ici
     }
 
+    public void seConnecter() {
+        // Logique ici
     }
 
     public void seDeconnecter() {
+        // Logique ici
     }
 }
