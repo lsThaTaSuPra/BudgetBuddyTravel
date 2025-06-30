@@ -54,31 +54,14 @@ public class Utilisateur {
     }
 
     public void creerCompte() {
-        // Simule la création d’un compte (dans une vraie app, appel backend ici)
-        System.out.println("Compte créé pour " + nom + " (" + email + ")");
+        // Logique ici
     }
 
-    public void seConnecter(String email, String motDePasse) {
-        if (this.email.equals(email) && this.motDePasse.equals(motDePasse)) {
-            estConnecte = true;
-            System.out.println("Connexion réussie !");
-        } else {
-            System.out.println("Identifiants incorrects.");
-        }
+    public void seConnecter() {
+        // Logique ici
     }
 
     public void seDeconnecter() {
-        estConnecte = false;
-        System.out.println("Déconnecté.");
-    }
-
-    @Override
-    public String toString() {
-        return "Utilisateur{" +
-                "id=" + id +
-                ", nom='" + nom + '\'' +
-                ", email='" + email + '\'' +
-                ", connecté=" + estConnecte +
-                '}';
+        // Logique ici
     }
 }
