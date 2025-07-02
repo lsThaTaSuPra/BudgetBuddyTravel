@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/homeLayout"
     android:layout_width="match_parent"
@@ -9,15 +8,26 @@
         android:id="@+id/scrollVoyages"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/buttonNouveauVoyage">
+        android:layout_above="@+id/buttonCategorie"
+        android:layout_marginBottom="5dp">
 
         <LinearLayout
             android:id="@+id/layoutVoyages"
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
     </ScrollView>
 
+    <!-- Bouton pour accéder à la gestion des catégories -->
+    <Button
+        android:id="@+id/buttonCategorie"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Créer des catégories"
+        android:layout_above="@+id/buttonNouveauVoyage"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Bouton existant pour créer un voyage -->
     <Button
         android:id="@+id/buttonNouveauVoyage"
         android:layout_width="match_parent"
