@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BudgetBuddyTravel"
         tools:targetApi="31">
+        <activity android:name=".HomeActivity" />
+        <activity android:name=".TripActivity" />
+        <activity android:name=".utils.DetailVoyageActivity" />
 
         <!-- 🔄 AuthActivity devient l'activité principale -->
         <activity
