@@ -45,12 +45,12 @@ public class TripActivity extends AppCompatActivity {
             try {
                 voyage.setNom(nomVoyageInput.getText().toString());
                 voyage.setDestination(destinationInput.getText().toString());
-                voyage.setBudgetGlobal(Float.parseFloat(budgetInput.getText().toString()));
+
 
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
                 voyage.setDateDepart(sdf.parse(dateDepartInput.getText().toString()));
                 voyage.setDateRetour(sdf.parse(dateRetourInput.getText().toString()));
-
+                voyage.setBudgetGlobal(Float.parseFloat(budgetInput.getText().toString()));
                 sauvegarderVoyageDansFichier(voyage);
                 finish();
 

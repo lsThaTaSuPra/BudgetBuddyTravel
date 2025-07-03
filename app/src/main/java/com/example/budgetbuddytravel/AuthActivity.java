@@ -34,7 +34,7 @@ public class AuthActivity extends AppCompatActivity {
 
             if (verifierIdentifiants(email, password)) {
                 Toast.makeText(this, "Connexion réussie !", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(AuthActivity.this, MainActivity.class);
+                Intent intent = new Intent(AuthActivity.this, HomeActivity.class);
                 startActivity(intent);
                 finish();
             } else {

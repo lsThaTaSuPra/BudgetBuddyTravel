@@ -28,17 +28,14 @@ public class HomeActivity extends AppCompatActivity {
         layoutVoyages = findViewById(R.id.layoutVoyages);
 
         Button nouveauVoyageBtn = findViewById(R.id.buttonNouveauVoyage);
-        Button boutonCategorie = findViewById(R.id.buttonCategorie);
+
 
         nouveauVoyageBtn.setOnClickListener(v -> {
             Intent intent = new Intent(HomeActivity.this, TripActivity.class);
             startActivity(intent);
         });
 
-        boutonCategorie.setOnClickListener(v -> {
-            Intent intent = new Intent(HomeActivity.this, CategorieActivity.class);
-            startActivity(intent);
-        });
+
 
         afficherTousLesVoyages();
     }
@@ -51,7 +48,7 @@ public class HomeActivity extends AppCompatActivity {
 
         if (fichiers == null || fichiers.length == 0) {
             TextView tv = new TextView(this);
-            tv.setText("Aucun voyage trouvé.");
+            tv.setText("Aucun voyage trouvÃ©.");
             layoutVoyages.addView(tv);
             return;
         }
