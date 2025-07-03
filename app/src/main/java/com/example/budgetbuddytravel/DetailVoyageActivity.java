@@ -1,58 +1,144 @@
 package com.example.budgetbuddytravel.utils;
 
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.budgetbuddytravel.R;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 
 public class DetailVoyageActivity extends AppCompatActivity {
 
-    private LinearLayout layoutDetail;
+    private LinearLayout layoutCategories;
+    private TextView textInfosVoyage;
+    private Button buttonAjouterCategorie;
+    private String nomFichier;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_voyage);
 
-        layoutDetail = findViewById(R.id.layoutDetailVoyage);
+        layoutCategories = findViewById(R.id.layoutDetailVoyage);
+        buttonAjouterCategorie = findViewById(R.id.buttonAjouterCategorie);
 
-        String nomFichier = getIntent().getStringExtra("fichier");
+        nomFichier = getIntent().getStringExtra("fichier");
         if (nomFichier == null) {
-            Toast.makeText(this, "Fichier non trouvé", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Fichier voyage introuvable", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
-        chargerContenuFichier(nomFichier);
+        afficherInfosVoyage();
+
+        buttonAjouterCategorie.setOnClickListener(v -> showAddCategorieDialog());
     }
 
-    private void chargerContenuFichier(String fichierNom) {
-        try {
-            FileInputStream fis = openFileInput(fichierNom);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
+    private void afficherInfosVoyage() {
+        layoutCategories.removeAllViews();
 
-            String ligne;
-            while ((ligne = reader.readLine()) != null) {
-                TextView tv = new TextView(this);
-                tv.setText(ligne);
-                tv.setPadding(0, 8, 0, 8);
-                layoutDetail.addView(tv);
+        try (FileInputStream fis = openFileInput(nomFichier);
+             BufferedReader reader = new BufferedReader(new InputStreamReader(fis))) {
+
+            StringBuilder infos = new StringBuilder();
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                if (line.contains(",")) {
+                    // C'est une catégorie : nom,budget
+                    String[] parts = line.split(",");
+                    if (parts.length >= 2) {
+                        String nomCat = parts[0];
+                        String budgetCat = parts[1];
+
+                        TextView tvCat = new TextView(this);
+                        tvCat.setText("- " + nomCat + " : " + budgetCat + " €");
+                        tvCat.setTextSize(16);
+                        layoutCategories.addView(tvCat);
+                    }
+                } else {
+                    // Partie infos générales
+                    TextView tvInfo = new TextView(this);
+                    tvInfo.setText(line);
+                    tvInfo.setTextSize(18);
+                    layoutCategories.addView(tvInfo);
+                }
+            }
+        } catch (Exception e) {
+            Toast.makeText(this, "Erreur lecture fichier : " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+    }
+
+    private void showAddCategorieDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Nouvelle catégorie");
+
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(50, 40, 50, 10);
+
+        final EditText inputNom = new EditText(this);
+        inputNom.setHint("Nom de la catégorie");
+        layout.addView(inputNom);
+
+        final EditText inputBudget = new EditText(this);
+        inputBudget.setHint("Budget prévu (€)");
+        inputBudget.setInputType(android.text.InputType.TYPE_CLASS_NUMBER | android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        layout.addView(inputBudget);
+
+        builder.setView(layout);
+
+        builder.setPositiveButton("Ajouter", (dialog, which) -> {
+            String nom = inputNom.getText().toString().trim();
+            String budgetStr = inputBudget.getText().toString().trim();
+
+            if (nom.isEmpty() || budgetStr.isEmpty()) {
+                Toast.makeText(this, "Tous les champs doivent être remplis", Toast.LENGTH_SHORT).show();
+                return;
             }
 
-            reader.close();
-            fis.close();
+            try {
+                float budget = Float.parseFloat(budgetStr);
 
+                // Écrire dans le fichier sans réécrire tout le voyage
+                ajouterCategorieAuFichier(nom, budget);
+
+                // Mettre à jour l'affichage
+                TextView tvCat = new TextView(this);
+                tvCat.setText("- " + nom + " : " + budget + " €");
+                tvCat.setTextSize(16);
+                layoutCategories.addView(tvCat);
+
+                Toast.makeText(this, "Catégorie ajoutée", Toast.LENGTH_SHORT).show();
+
+            } catch (NumberFormatException e) {
+                Toast.makeText(this, "Budget invalide", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.setNegativeButton("Annuler", null);
+        builder.show();
+    }
+
+    private void ajouterCategorieAuFichier(String nom, float budget) {
+        String ligne = nom + "," + budget + "\n";
+
+        try (FileOutputStream fos = openFileOutput(nomFichier, MODE_APPEND)) {
+            fos.write(ligne.getBytes());
         } catch (Exception e) {
+            Toast.makeText(this, "Erreur lors de l'ajout", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
-            Toast.makeText(this, "Erreur lecture : " + fichierNom, Toast.LENGTH_SHORT).show();
         }
     }
 }
