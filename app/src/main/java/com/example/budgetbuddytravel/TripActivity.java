@@ -43,21 +43,33 @@ public class TripActivity extends AppCompatActivity {
 
         validerBtn.setOnClickListener(v -> {
             try {
-                voyage.setNom(nomVoyageInput.getText().toString());
-                voyage.setDestination(destinationInput.getText().toString());
+                String nom = nomVoyageInput.getText().toString().trim();
+                String destination = destinationInput.getText().toString().trim();
+                String dateDepartStr = dateDepartInput.getText().toString().trim();
+                String dateRetourStr = dateRetourInput.getText().toString().trim();
+                String budgetStr = budgetInput.getText().toString().trim();
 
+                if (nom.isEmpty() || destination.isEmpty() || dateDepartStr.isEmpty()
+                        || dateRetourStr.isEmpty() || budgetStr.isEmpty()) {
+                    Toast.makeText(this, "Tous les champs doivent être remplis", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-                voyage.setDateDepart(sdf.parse(dateDepartInput.getText().toString()));
-                voyage.setDateRetour(sdf.parse(dateRetourInput.getText().toString()));
-                voyage.setBudgetGlobal(Float.parseFloat(budgetInput.getText().toString()));
+                voyage.setNom(nom);
+                voyage.setDestination(destination);
+                voyage.setDateDepart(sdf.parse(dateDepartStr));
+                voyage.setDateRetour(sdf.parse(dateRetourStr));
+                voyage.setBudgetGlobal(Float.parseFloat(budgetStr));
+
                 sauvegarderVoyageDansFichier(voyage);
                 finish();
 
             } catch (Exception e) {
-                Toast.makeText(this, "Erreur dans les données", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Erreur : " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+
     }
 
     private void showAddCategorieDialog() {
