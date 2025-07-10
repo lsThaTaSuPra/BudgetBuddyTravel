@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import android.content.SharedPreferences;
 
 import java.io.*;
 
@@ -14,6 +15,8 @@ public class AuthActivity extends AppCompatActivity {
 
     private EditText editEmail, editPassword;
     private Button buttonLogin, buttonRegister;
+    private static final String PREFS_NAME = "BudgetBuddyPrefs";
+    private static final String KEY_EMAIL = "saved_email";
 
     private final String FILE_NAME = "utilisateur.txt";
 
@@ -27,12 +30,24 @@ public class AuthActivity extends AppCompatActivity {
         buttonLogin = findViewById(R.id.buttonLogin);
         buttonRegister = findViewById(R.id.buttonRegister);
 
+        // 🔁 Charger l'email sauvegardé, s'il existe
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        String savedEmail = prefs.getString(KEY_EMAIL, "");
+        if (!savedEmail.isEmpty()) {
+            editEmail.setText(savedEmail);
+        }
+
         // Connexion
         buttonLogin.setOnClickListener(v -> {
             String email = editEmail.getText().toString().trim();
             String password = editPassword.getText().toString().trim();
 
             if (verifierIdentifiants(email, password)) {
+                // ✅ Sauvegarder l'email
+                SharedPreferences.Editor editor = getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit();
+                editor.putString(KEY_EMAIL, email);
+                editor.apply();
+
                 Toast.makeText(this, "Connexion réussie !", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(AuthActivity.this, HomeActivity.class);
                 startActivity(intent);
