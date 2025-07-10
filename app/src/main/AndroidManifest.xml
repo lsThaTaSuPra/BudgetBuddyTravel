@@ -32,7 +32,7 @@
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.BudgetBuddyTravel"/>
-        <activity android:name=".utils.StatistiquesActivity" />
+        <activity android:name=".StatistiquesActivity" />
 
 
     </application>

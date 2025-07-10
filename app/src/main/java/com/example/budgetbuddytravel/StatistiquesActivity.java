@@ -1,4 +1,4 @@
-package com.example.budgetbuddytravel.utils;
+package com.example.budgetbuddytravel;
 
 import android.os.Bundle;
 import android.widget.TextView;
@@ -11,7 +11,7 @@ import com.example.budgetbuddytravel.model.Voyage;
 
 import java.util.Date;
 
-import com.example.budgetbuddytravel.R;
+import com.example.budgetbuddytravel.utils.Statistiques;
 
 
 public class StatistiquesActivity extends AppCompatActivity {

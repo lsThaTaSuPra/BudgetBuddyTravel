@@ -1,8 +1,7 @@
-package com.example.budgetbuddytravel.utils;
+package com.example.budgetbuddytravel;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.budgetbuddytravel.R;
 
 public class CategorieActivity extends AppCompatActivity {
     @Override
