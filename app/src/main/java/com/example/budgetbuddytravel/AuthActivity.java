@@ -3,6 +3,7 @@ package com.example.budgetbuddytravel;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -12,6 +13,8 @@ import android.content.SharedPreferences;
 import java.io.*;
 
 public class AuthActivity extends AppCompatActivity {
+
+    private static final String TAG = "AuthActivity";
 
     private EditText editEmail, editPassword;
     private Button buttonLogin, buttonRegister;
@@ -30,11 +33,16 @@ public class AuthActivity extends AppCompatActivity {
         buttonLogin = findViewById(R.id.buttonLogin);
         buttonRegister = findViewById(R.id.buttonRegister);
 
-        // 🔁 Charger l'email sauvegardé, s'il existe
-        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        String savedEmail = prefs.getString(KEY_EMAIL, "");
-        if (!savedEmail.isEmpty()) {
-            editEmail.setText(savedEmail);
+        // 🔁 Charger l'email sauvegardé
+        try {
+            SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+            String savedEmail = prefs.getString(KEY_EMAIL, "");
+            if (!savedEmail.isEmpty()) {
+                editEmail.setText(savedEmail);
+                Log.d(TAG, "Email chargé depuis SharedPreferences.");
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Erreur lors du chargement de l'email sauvegardé", e);
         }
 
         // Connexion
@@ -42,18 +50,25 @@ public class AuthActivity extends AppCompatActivity {
             String email = editEmail.getText().toString().trim();
             String password = editPassword.getText().toString().trim();
 
-            if (verifierIdentifiants(email, password)) {
-                // ✅ Sauvegarder l'email
-                SharedPreferences.Editor editor = getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit();
-                editor.putString(KEY_EMAIL, email);
-                editor.apply();
+            try {
+                if (verifierIdentifiants(email, password)) {
+                    SharedPreferences.Editor editor = getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit();
+                    editor.putString(KEY_EMAIL, email);
+                    editor.apply();
 
-                Toast.makeText(this, "Connexion réussie !", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(AuthActivity.this, HomeActivity.class);
-                startActivity(intent);
-                finish();
-            } else {
-                Toast.makeText(this, "Email ou mot de passe incorrect", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "Connexion réussie pour l'email : " + email);
+                    Toast.makeText(this, "Connexion réussie !", Toast.LENGTH_SHORT).show();
+
+                    Intent intent = new Intent(AuthActivity.this, HomeActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Log.d(TAG, "Échec de la connexion : identifiants incorrects.");
+                    Toast.makeText(this, "Email ou mot de passe incorrect", Toast.LENGTH_SHORT).show();
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Erreur pendant la tentative de connexion", e);
+                Toast.makeText(this, "Erreur lors de la connexion", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -67,41 +82,69 @@ public class AuthActivity extends AppCompatActivity {
                 return;
             }
 
-            enregistrerUtilisateur(email, password);
-            Toast.makeText(this, "Compte créé ! Vous pouvez maintenant vous connecter.", Toast.LENGTH_SHORT).show();
+            try {
+                enregistrerUtilisateur(email, password);
+                Log.d(TAG, "Compte enregistré pour : " + email);
+                Toast.makeText(this, "Compte créé ! Vous pouvez maintenant vous connecter.", Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                Log.e(TAG, "Erreur lors de l'enregistrement de l'utilisateur", e);
+                Toast.makeText(this, "Erreur lors de l'enregistrement", Toast.LENGTH_LONG).show();
+            }
         });
     }
 
     // ✅ Enregistre email + mot de passe dans le fichier
-    private void enregistrerUtilisateur(String email, String password) {
+    private void enregistrerUtilisateur(String email, String password) throws IOException {
+        FileOutputStream fos = null;
         try {
-            FileOutputStream fos = openFileOutput(FILE_NAME, Context.MODE_PRIVATE);
+            fos = openFileOutput(FILE_NAME, Context.MODE_PRIVATE);
             String data = email + ";" + password;
             fos.write(data.getBytes());
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } finally {
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    Log.w(TAG, "Erreur lors de la fermeture du fichier après enregistrement", e);
+                }
+            }
         }
     }
 
     // ✅ Vérifie les identifiants contre le fichier
-    private boolean verifierIdentifiants(String email, String password) {
+    private boolean verifierIdentifiants(String email, String password) throws IOException {
+        FileInputStream fis = null;
+        BufferedReader reader = null;
         try {
-            FileInputStream fis = openFileInput(FILE_NAME);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
+            fis = openFileInput(FILE_NAME);
+            reader = new BufferedReader(new InputStreamReader(fis));
             String ligne = reader.readLine();
-            reader.close();
-            fis.close();
 
             if (ligne != null) {
                 String[] parts = ligne.split(";");
                 if (parts.length == 2) {
                     return parts[0].equals(email) && parts[1].equals(password);
+                } else {
+                    Log.w(TAG, "Format du fichier invalide");
                 }
             }
-        } catch (IOException e) {
-            // Fichier non trouvé ou erreur de lecture
-            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, "Fichier utilisateur introuvable", e);
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    Log.w(TAG, "Erreur lors de la fermeture du lecteur", e);
+                }
+            }
+            if (fis != null) {
+                try {
+                    fis.close();
+                } catch (IOException e) {
+                    Log.w(TAG, "Erreur lors de la fermeture du flux", e);
+                }
+            }
         }
         return false;
     }
