@@ -20,7 +20,7 @@
 - **Utilisateur** : crée et gère les voyages  
 - **Voyage** : regroupe les catégories et les dépenses  
 - **CatégorieDepense** : stocke les types de dépenses  
-- **Depense** : enregistre chaque transaction  
+- **Dépense** : enregistre chaque transaction  
 - **Statistiques** : calcule les écarts entre prévisionnel et réel  
 
 ### Relations
