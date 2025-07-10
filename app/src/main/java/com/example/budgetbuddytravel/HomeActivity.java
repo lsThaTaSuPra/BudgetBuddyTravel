@@ -13,7 +13,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
-
+import java.io.IOException;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -28,13 +28,10 @@ public class HomeActivity extends AppCompatActivity {
 
         Button nouveauVoyageBtn = findViewById(R.id.buttonNouveauVoyage);
 
-
         nouveauVoyageBtn.setOnClickListener(v -> {
             Intent intent = new Intent(HomeActivity.this, TripActivity.class);
             startActivity(intent);
         });
-
-
 
         afficherTousLesVoyages();
     }
@@ -47,24 +44,24 @@ public class HomeActivity extends AppCompatActivity {
 
         if (fichiers == null || fichiers.length == 0) {
             TextView tv = new TextView(this);
-            tv.setText("Aucun voyage trouvÃ©.");
+            tv.setText("Aucun voyage trouvé.");
             layoutVoyages.addView(tv);
             return;
         }
 
         for (File fichier : fichiers) {
+            FileInputStream fis = null;
+            BufferedReader reader = null;
+
             try {
-                FileInputStream fis = openFileInput(fichier.getName());
-                BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
+                fis = openFileInput(fichier.getName());
+                reader = new BufferedReader(new InputStreamReader(fis));
 
                 StringBuilder contenu = new StringBuilder();
                 String ligne;
                 while ((ligne = reader.readLine()) != null) {
                     contenu.append(ligne).append("\n");
                 }
-
-                reader.close();
-                fis.close();
 
                 final String nomFichier = fichier.getName();
 
@@ -79,9 +76,20 @@ public class HomeActivity extends AppCompatActivity {
 
                 layoutVoyages.addView(tv);
 
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Erreur de lecture du fichier : " + fichier.getName(), Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
                 e.printStackTrace();
-                Toast.makeText(this, "Erreur lecture fichier : " + fichier.getName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Une erreur est survenue pour : " + fichier.getName(), Toast.LENGTH_SHORT).show();
+            } finally {
+                try {
+                    if (reader != null) reader.close();
+                    if (fis != null) fis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, "Erreur lors de la fermeture du fichier : " + fichier.getName(), Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }
