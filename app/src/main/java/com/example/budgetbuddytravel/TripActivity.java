@@ -10,10 +10,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.budgetbuddytravel.model.CategorieDepense;
 import com.example.budgetbuddytravel.model.Voyage;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.io.FileOutputStream;
-
+import java.io.IOException;
 
 public class TripActivity extends AppCompatActivity {
 
@@ -42,20 +43,21 @@ public class TripActivity extends AppCompatActivity {
         addCategorieBtn.setOnClickListener(v -> showAddCategorieDialog());
 
         validerBtn.setOnClickListener(v -> {
+            String nom = nomVoyageInput.getText().toString().trim();
+            String destination = destinationInput.getText().toString().trim();
+            String dateDepartStr = dateDepartInput.getText().toString().trim();
+            String dateRetourStr = dateRetourInput.getText().toString().trim();
+            String budgetStr = budgetInput.getText().toString().trim();
+
+            if (nom.isEmpty() || destination.isEmpty() || dateDepartStr.isEmpty()
+                    || dateRetourStr.isEmpty() || budgetStr.isEmpty()) {
+                Toast.makeText(this, "Tous les champs doivent être remplis", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             try {
-                String nom = nomVoyageInput.getText().toString().trim();
-                String destination = destinationInput.getText().toString().trim();
-                String dateDepartStr = dateDepartInput.getText().toString().trim();
-                String dateRetourStr = dateRetourInput.getText().toString().trim();
-                String budgetStr = budgetInput.getText().toString().trim();
-
-                if (nom.isEmpty() || destination.isEmpty() || dateDepartStr.isEmpty()
-                        || dateRetourStr.isEmpty() || budgetStr.isEmpty()) {
-                    Toast.makeText(this, "Tous les champs doivent être remplis", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+
                 voyage.setNom(nom);
                 voyage.setDestination(destination);
                 voyage.setDateDepart(sdf.parse(dateDepartStr));
@@ -65,11 +67,15 @@ public class TripActivity extends AppCompatActivity {
                 sauvegarderVoyageDansFichier(voyage);
                 finish();
 
+            } catch (ParseException e) {
+                Toast.makeText(this, "Format de date invalide. Utilisez jj/MM/aaaa", Toast.LENGTH_SHORT).show();
+            } catch (NumberFormatException e) {
+                Toast.makeText(this, "Format de budget invalide", Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
-                Toast.makeText(this, "Erreur : " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Erreur inattendue : " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
             }
         });
-
     }
 
     private void showAddCategorieDialog() {
@@ -106,6 +112,9 @@ public class TripActivity extends AppCompatActivity {
 
                 } catch (NumberFormatException e) {
                     Toast.makeText(this, "Budget invalide", Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    Toast.makeText(this, "Erreur inattendue", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
                 }
             }
         });
@@ -118,29 +127,33 @@ public class TripActivity extends AppCompatActivity {
         StringBuilder sb = new StringBuilder();
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 
-        sb.append("Voyage : ").append(voyage.getNom()).append("\n");
-        sb.append("Destination : ").append(voyage.getDestination()).append("\n");
-        sb.append("Départ : ").append(sdf.format(voyage.getDateDepart())).append("\n");
-        sb.append("Retour : ").append(sdf.format(voyage.getDateRetour())).append("\n");
-        sb.append("Budget global : ").append(voyage.getBudgetGlobal()).append(" €\n");
-        sb.append("Catégories :\n");
+        try {
+            sb.append("Voyage : ").append(voyage.getNom()).append("\n");
+            sb.append("Destination : ").append(voyage.getDestination()).append("\n");
+            sb.append("Départ : ").append(sdf.format(voyage.getDateDepart())).append("\n");
+            sb.append("Retour : ").append(sdf.format(voyage.getDateRetour())).append("\n");
+            sb.append("Budget global : ").append(voyage.getBudgetGlobal()).append(" €\n");
+            sb.append("Catégories :\n");
 
-        for (CategorieDepense cat : voyage.getCategories()) {
-            sb.append("- ").append(cat.getNom())
-                    .append(" : ").append(cat.getBudgetPrevu())
-                    .append(" €\n");
-        }
+            for (CategorieDepense cat : voyage.getCategories()) {
+                sb.append("- ").append(cat.getNom())
+                        .append(" : ").append(cat.getBudgetPrevu())
+                        .append(" €\n");
+            }
 
-        String filename = "voyage_" + System.currentTimeMillis() + ".txt";
+            String filename = "voyage_" + System.currentTimeMillis() + ".txt";
 
-        try (FileOutputStream fos = openFileOutput(filename, MODE_PRIVATE)) {
-            fos.write(sb.toString().getBytes());
-            Toast.makeText(this, "Voyage sauvegardé dans : " + filename, Toast.LENGTH_SHORT).show();
+            try (FileOutputStream fos = openFileOutput(filename, MODE_PRIVATE)) {
+                fos.write(sb.toString().getBytes());
+                Toast.makeText(this, "Voyage sauvegardé dans : " + filename, Toast.LENGTH_SHORT).show();
+            } catch (IOException e) {
+                Toast.makeText(this, "Erreur lors de la sauvegarde du fichier", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            }
+
         } catch (Exception e) {
-            Toast.makeText(this, "Erreur lors de la sauvegarde", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Erreur lors de la génération du contenu du fichier", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
     }
-
-
 }
