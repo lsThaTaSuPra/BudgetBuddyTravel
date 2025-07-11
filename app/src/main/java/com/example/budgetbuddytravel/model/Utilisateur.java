@@ -12,31 +12,11 @@ public class Utilisateur extends Personne {
     private boolean estConnecte = false;
 
     private static final String FILE_NAME = "utilisateur.txt";
-
-    public Utilisateur() {
-        super();
-    }
-
     public Utilisateur(int id, String nom, String email, String motDePasse) {
         super(id, nom, email);
         this.motDePasse = motDePasse;
     }
-
-    public String getMotDePasse() {
-        return motDePasse;
-    }
-
-    public void setMotDePasse(String motDePasse) {
-        this.motDePasse = motDePasse;
-    }
-
-    public boolean isEstConnecte() {
-        return estConnecte;
-    }
-
-
      // Enregistre le compte dans le fichier local
-
     public void creerCompte(Context context) {
         try {
             FileOutputStream fos = context.openFileOutput(FILE_NAME, Context.MODE_PRIVATE);
@@ -47,10 +27,7 @@ public class Utilisateur extends Personne {
             e.printStackTrace();
         }
     }
-
-
      // Vérifie les identifiants stockés et connecte l’utilisateur si OK
-
     public boolean seConnecter(Context context) {
         try {
             FileInputStream fis = context.openFileInput(FILE_NAME);
@@ -72,13 +49,10 @@ public class Utilisateur extends Personne {
         return false;
     }
 
-
      // Déconnecte l'utilisateur
-
     public void seDeconnecter() {
         this.estConnecte = false;
     }
-
     public static String getEmailDepuisFichier(Context context) {
         try {
             FileInputStream fis = context.openFileInput(FILE_NAME);

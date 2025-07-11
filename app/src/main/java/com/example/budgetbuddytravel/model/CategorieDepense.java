@@ -32,22 +32,9 @@ public class CategorieDepense {
         return nom;
     }
 
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
-
     public float getBudgetPrevu() {
         return budgetPrevu;
     }
-
-    public void setBudgetPrevu(float budgetPrevu) {
-        this.budgetPrevu = budgetPrevu;
-    }
-
-    public float getBudgetReel() {
-        return budgetReel;
-    }
-
     public List<Depense> getDepenses() {
         return depenses;
     }
