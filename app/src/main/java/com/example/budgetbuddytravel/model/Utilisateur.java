@@ -48,11 +48,6 @@ public class Utilisateur extends Personne {
         }
         return false;
     }
-
-     // Déconnecte l'utilisateur
-    public void seDeconnecter() {
-        this.estConnecte = false;
-    }
     public static String getEmailDepuisFichier(Context context) {
         try {
             FileInputStream fis = context.openFileInput(FILE_NAME);
