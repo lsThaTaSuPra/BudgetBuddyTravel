@@ -33,6 +33,24 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        Button deconnexionBtn = findViewById(R.id.buttonDeconnexion);
+
+        deconnexionBtn.setOnClickListener(v -> {
+            // Optionnel : effacer l’email enregistré si tu l’utilises
+            getSharedPreferences("BudgetBuddyPrefs", MODE_PRIVATE)
+                    .edit()
+                    .clear()
+                    .apply();
+
+            Toast.makeText(this, "Déconnexion réussie", Toast.LENGTH_SHORT).show();
+
+            Intent intent = new Intent(HomeActivity.this, AuthActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // évite retour avec le bouton back
+            startActivity(intent);
+            finish();
+        });
+
+
         afficherTousLesVoyages();
     }
 
@@ -99,4 +117,5 @@ public class HomeActivity extends AppCompatActivity {
         super.onResume();
         afficherTousLesVoyages();
     }
+
 }
