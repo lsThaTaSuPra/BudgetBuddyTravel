@@ -1,5 +1,7 @@
 package com.example.budgetbuddytravel.model;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,7 +13,7 @@ public class Voyage {
     private Date dateDepart;
     private Date dateRetour;
     private float budgetGlobal;
-    private List<CategorieDepense> categories = new ArrayList<>();
+    private final List<CategorieDepense> categories = new ArrayList<>();
 
     public Voyage() {
     }
@@ -85,6 +87,7 @@ public class Voyage {
         categories.remove(categorie);
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Voyage{" +

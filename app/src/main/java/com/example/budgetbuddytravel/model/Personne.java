@@ -4,9 +4,6 @@ public class Personne {
     protected int id;
     protected String nom;
     protected String email;
-
-    public Personne() {}
-
     public Personne(int id, String nom, String email) {
         this.id = id;
         this.nom = nom;

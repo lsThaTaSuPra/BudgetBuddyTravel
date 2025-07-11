@@ -8,7 +8,7 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 
 public class Utilisateur extends Personne {
-    private String motDePasse;
+    private final String motDePasse;
     private boolean estConnecte = false;
 
     private static final String FILE_NAME = "utilisateur.txt";

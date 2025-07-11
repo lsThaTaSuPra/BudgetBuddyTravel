@@ -1,17 +1,16 @@
 package com.example.budgetbuddytravel.model;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class CategorieDepense {
     private int id;
-    private String nom;
-    private float budgetPrevu;
+    private final String nom;
+    private final float budgetPrevu;
     private float budgetReel;
-    private List<Depense> depenses = new ArrayList<>();
-
-    public CategorieDepense() {
-    }
+    private final List<Depense> depenses = new ArrayList<>();
 
     public CategorieDepense(int id, String nom, float budgetPrevu) {
         this.id = id;
@@ -44,6 +43,7 @@ public class CategorieDepense {
         budgetReel += depense.getMontant(); // exemple : recalcul automatique
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "CategorieDepense{" +
