@@ -1,16 +1,15 @@
 package com.example.budgetbuddytravel.model;
 
+import androidx.annotation.NonNull;
+
 import java.util.Date;
 
 public class Depense {
     private int id;
-    private String nom;
-    private float montant;
-    private Date date;
-    private String description;
-
-    public Depense() {
-    }
+    private final String nom;
+    private final float montant;
+    private final Date date;
+    private final String description;
 
     public Depense(int id, String nom, float montant, Date date, String description) {
         this.id = id;
@@ -31,6 +30,7 @@ public class Depense {
         return montant;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Depense{" +
