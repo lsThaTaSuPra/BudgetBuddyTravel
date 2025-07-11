@@ -32,7 +32,7 @@ public class HomeActivity extends AppCompatActivity {
             Intent intent = new Intent(HomeActivity.this, TripActivity.class);
             startActivity(intent);
         });
-
+        // Bouton de déconnexion pour l'utilisateur quand il est sur la HomePage
         Button deconnexionBtn = findViewById(R.id.buttonDeconnexion);
 
         deconnexionBtn.setOnClickListener(v -> {
@@ -49,7 +49,23 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
+        // Bouton pour nettoyer les données dans les voyages
+        Button clearDataBtn = findViewById(R.id.buttonClearData);
+        clearDataBtn.setOnClickListener(v -> {
+            File dir = getFilesDir();
+            File[] fichiers = dir.listFiles((dir1, name) -> name.startsWith("voyage_") && name.endsWith(".txt"));
 
+            if (fichiers != null) {
+                for (File fichier : fichiers) {
+                    boolean deleted = fichier.delete();
+                    if (!deleted) {
+                        Toast.makeText(this, "Erreur suppression : " + fichier.getName(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+                Toast.makeText(this, "Tous les voyages ont été supprimés", Toast.LENGTH_SHORT).show();
+                afficherTousLesVoyages(); // refresh UI
+            }
+        });
 
         afficherTousLesVoyages();
     }
