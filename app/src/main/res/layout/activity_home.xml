@@ -72,5 +72,15 @@
             android:layout_height="wrap_content"
             android:text="Nouveau voyage" />
 
+        <!-- Bouton clear les données des voyages -->
+        <Button
+            android:id="@+id/buttonClearData"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Réinitialiser les données"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="#6A1B9A"
+            android:textColor="@android:color/white" />
+
     </LinearLayout>
 </ScrollView>
